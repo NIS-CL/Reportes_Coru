@@ -9,7 +9,7 @@ import sys
 import json
 
 # Configuración
-API_TOKEN = os.getenv('LIBRENMS_TOKEN', 'd461ef4ed7c4dae512e54825e6e42681')
+API_TOKEN = os.getenv('LIBRENMS_TOKEN', 'fde5b824669326c729a1f08e1b9e25a5')
 BASE_URL = os.getenv('LIBRENMS_URL', 'https://monitorcoru.netlayer.cl/api/v0')
 HEADERS = {
     'X-Auth-Token': API_TOKEN,
@@ -32,6 +32,12 @@ def get_devices():
         data = response.json()
         devices = data['devices']
         
+        # Imprimir la información del primer dispositivo para ver los campos disponibles
+        if devices:
+            print("\nCampos disponibles en el primer dispositivo:")
+            for key, value in devices[0].items():
+                print(f"{key}: {value}")
+        
         # Obtener los dispositivos con su información
         dispositivos = []
         for dev in devices:
@@ -49,6 +55,14 @@ def get_devices():
                         sysname = dev.get('hostname', 'N/A')
             else:
                 sysname = dev.get('hostname', 'N/A')
+            
+            # Imprimir información de depuración para cada dispositivo
+            print(f"\nProcesando dispositivo:")
+            print(f"Hostname: {dev.get('hostname', 'N/A')}")
+            print(f"Sysname original: {dev.get('sysname', 'N/A')}")
+            print(f"Sysname procesado: {sysname}")
+            print(f"Display: {dev.get('display', 'N/A')}")
+            print(f"Description: {dev.get('description', 'N/A')}")
             
             dispositivos.append((
                 dev['hostname'],
@@ -74,6 +88,22 @@ def get_device_availability(device_id, start_date, end_date):
         response = requests.get(url, headers=HEADERS, params=params)
         response.raise_for_status()
         data = response.json()
+        
+        # Guardar la respuesta en un archivo para análisis
+        with open(f'debug_availability_{device_id}.json', 'w') as f:
+            json.dump(data, f, indent=2)
+        
+        print(f"\nDatos de disponibilidad para dispositivo {device_id}:")
+        print(f"URL: {url}")
+        print(f"Parámetros: {params}")
+        
+        if 'availability' in data:
+            print("\nEstructura de los datos de disponibilidad:")
+            if data['availability']:
+                print("Campos disponibles en la primera entrada:")
+                for key, value in data['availability'][0].items():
+                    print(f"{key}: {value}")
+        
         return data.get('availability', [])
     except Exception as e:
         logging.error(f"Error al obtener disponibilidad para dispositivo {device_id}: {str(e)}")
@@ -205,6 +235,7 @@ def construir_reporte(start_date, end_date):
     disponibilidad_total = {}
 
     for hostname, device_id, ip, fecha_agregado, sysname in equipos:
+        print(f"\nProcesando dispositivo: {hostname} (ID: {device_id})")
         availability = get_device_availability(device_id, start_date, end_date)
         
         # Calcular disponibilidad total
