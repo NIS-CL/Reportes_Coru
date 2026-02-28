@@ -68,33 +68,10 @@ pip install pandas>=1.5.0 requests>=2.28.0
   - Estadísticas de tráfico de red
 
 ## Uso
+En este caso, la forma de ejecutar el script es:
 
-1. Ejecuta el script:
-   ```bash
-   python librenms_report.py
-   ```
+# python3 disponibilidad_rango.py FECHA_INICIO FECHA_FIN (ambos en formato DD-MM-YYYY). Ejemplo, si quisieras los totales de disponibilidad entre el 01 de febrero de 2026 y el 25, sería así:
 
-2. El script te pedirá:
-   - Fecha de inicio (formato: YYYY-MM-DD)
-   - Fecha de fin (formato: YYYY-MM-DD)
-
-3. El reporte se generará en la carpeta `reportes` con el nombre:
-   ```
-   disponibilidad_YYYYMMDD_YYYYMMDD.xlsx
-   ```
-
-## Estructura del Reporte
-
-### Columnas del Excel
-- **Equipo**: Nombre del dispositivo
-- **Sysname**: Nombre del punto de acceso (AP)
-- **IP**: Dirección IP del dispositivo
-- **Fecha de agregado**: Fecha y hora en que el dispositivo fue agregado al monitoreo
-- **Horas online**: Tiempo que el dispositivo estuvo disponible
-- **Horas offline**: Tiempo que el dispositivo estuvo no disponible
-- **Tiempo total**: Suma de horas online y offline
-- **Disponibilidad**: Porcentaje de tiempo que el dispositivo estuvo disponible
-- **Fecha inicio**: Inicio del período de monitoreo
-- **Fecha fin**: Fin del período de monitoreo
+# python3 disponibilidad_rango.py 01-02-2025 25-02-2025
 
 
